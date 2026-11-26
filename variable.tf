@@ -71,3 +71,15 @@ variable "vpc_peering_tags" {
     type = map
     default = {}
 }
+
+
+# #/* variable "peer_vpc_id" {
+#   type        = string
+#   description = "VPC ID of the accepter VPC in the other account"
+# }
+
+# variable "peer_owner_id" {
+#   type        = string
+#   description = "12-digit AWS Account ID of the accepter VPC"
+# }
+#  *

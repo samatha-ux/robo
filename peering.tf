@@ -16,19 +16,31 @@ resource "aws_vpc_peering_connection" "default" {
             Name = "${local.common_name}-default"
         }
     )
-} 
+}
 resource "aws_route" "public_peering" {
-    count = var.is_peering_required ? 1 :0 #we can add private and databaseas well as per requirement
-    route_table_id = aws_route_table.public.id
-    destination_cidr_block = data.aws_vpc.default.cidr
-    vpc_peering_connection_id = aws_vpc_peering_connection.default[count.index].id
-    
+  count                     = var.is_peering_required ? 1 : 0 #we can add private and databaseas well as per requirement
+  route_table_id            = aws_route_table.public.id
+  destination_cidr_block    = data.aws_vpc.default.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.default[count.index].id
 }
-resource "aws_route" "default"{
-    count = var.is_peering_required ? 1 :0
-    route_table_id = data.aws_route_table.default.id
-    destination_cidr_block = var.vpc_cidr #if another vpc we are connecting then we should inform them to add this route
-    vpc_peering_connection_id = aws_vpc_peering_connection.default[count.index].id
+
+resource "aws_route" "default" {
+  count                     = var.is_peering_required ? 1 : 0
+  route_table_id            = data.aws_route_table.default.id
+  destination_cidr_block    = var.vpc_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.default[count.index].id
 }
 
 
+/* 
+resource "aws_vpc_peering_connection" "default" {
+  count         = var.is_peering_required ? 1 : 0
+  vpc_id        = aws_vpc.main.id
+  peer_vpc_id   = var.peer_vpc_id
+  peer_owner_id = var.peer_owner_id
+  auto_accept   = false # Must be false for cross-account peering
+
+  requester {
+    allow_remote_vpc_dns_resolution = true
+  }
+} */
